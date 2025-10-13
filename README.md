@@ -7,6 +7,7 @@ AI-powered task planning service that breaks down goals into actionable tasks wi
 **Objective**: Break user goals into actionable tasks with timelines using AI reasoning.
 
 **Scope:**
+
 - **Input**: Goal text (e.g., "Launch a product in 2 weeks")
 - **Output**: Task breakdown, dependencies, estimated timelines
 - **Optional frontend**: Submit goals & view plans with visualizations
@@ -14,27 +15,32 @@ AI-powered task planning service that breaks down goals into actionable tasks wi
 ## 🏗️ Technical Implementation
 
 ### Backend API (FastAPI)
+
 - `POST /plan` - Processes goal and generates structured task plan
 - `GET /health` - Service health check
 - Full input validation with Pydantic schemas
 - Async execution for optimal performance
 
 ### LLM Integration (Google Gemini)
+
 - **Model**: Gemini 2.0 Flash (configurable)
 - **Prompt Engineering**: Structured JSON output with task dependencies
 - **Fallback**: Mock planner for development without API key
-- **Features**: 
+- **Features**:
   - Dependency-aware task generation
   - Confidence scoring per task
   - Planning strategy explanation
+  - **Reference links** - Helpful tutorials, docs, and resources for each task
 
 ### Optional Frontend
+
 - Clean, responsive UI with Tailwind CSS
 - Interactive Gantt chart visualization (Mermaid)
 - Real-time plan generation
 - Mobile-friendly design
 
 ### Validation Engine
+
 - Dependency cycle detection (prevents circular references)
 - Timeline conflict resolution
 - Ensures tasks fit within planning horizon
@@ -42,6 +48,7 @@ AI-powered task planning service that breaks down goals into actionable tasks wi
 ## 🚀 Installation & Setup
 
 ### Prerequisites
+
 - Python 3.10+
 - Google Gemini API key ([Get free key](https://aistudio.google.com/app/apikey))
 
@@ -63,15 +70,19 @@ uvicorn app.main:app --reload
 ## 📖 Usage
 
 ### Option 1: Interactive Frontend
+
 Open `frontend/index.html` in your browser and fill in:
+
 - Goal description
 - Target date or planning horizon
 - Optional guidance (constraints, team size, etc.)
 
 ### Option 2: API (Swagger UI)
+
 Visit http://127.0.0.1:8000/docs and use the interactive interface
 
 ### Option 3: Python Script
+
 ```python
 from app.services.plan_service import PlanService
 from app.schemas import PlanRequest
@@ -85,7 +96,7 @@ async def main():
         guidance="Team of 2 developers, MVP focus"
     )
     response = await service.generate(request)
-    
+
     print(f"Generated {len(response.tasks)} tasks")
     for task in response.tasks:
         print(f"- {task.title} ({task.start_date} → {task.due_date})")
@@ -94,6 +105,7 @@ asyncio.run(main())
 ```
 
 ### Option 4: cURL
+
 ```bash
 curl -X POST "http://127.0.0.1:8000/plan" \
   -H "Content-Type: application/json" \
@@ -129,6 +141,7 @@ smart-task-planner/
 ## 🎨 Example Output
 
 **Input:**
+
 ```json
 {
   "goal": "Launch a productivity app in 2 weeks",
@@ -138,6 +151,7 @@ smart-task-planner/
 ```
 
 **Output:**
+
 ```json
 {
   "metadata": {
@@ -162,7 +176,7 @@ smart-task-planner/
       "start_date": "2025-10-13",
       "due_date": "2025-10-14",
       "depends_on": ["T1"],
-      "confidence": 0.90
+      "confidence": 0.9
     }
     // ... 7 more tasks with dependencies
   ]
@@ -183,31 +197,37 @@ pytest tests/ -v
 
 Environment variables (`.env` file):
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `GEMINI_API_KEY` | None | Your Gemini API key (required) |
-| `GEMINI_MODEL` | `gemini-2.0-flash-exp` | Model to use |
-| `SMART_TASK_PLANNER_MOCK` | `false` | Use mock mode (no API calls) |
+| Variable                  | Default                | Description                    |
+| ------------------------- | ---------------------- | ------------------------------ |
+| `GEMINI_API_KEY`          | None                   | Your Gemini API key (required) |
+| `GEMINI_MODEL`            | `gemini-2.0-flash-exp` | Model to use                   |
+| `SMART_TASK_PLANNER_MOCK` | `false`                | Use mock mode (no API calls)   |
 
 ## 📊 Key Features
 
 ### LLM Usage
+
 - **Prompt Strategy**: "Break down this goal into actionable tasks with suggested deadlines and dependencies"
 - **Output Format**: Structured JSON with metadata and task array
-- **Task Fields**: ID, title, description, owner, dates, duration, dependencies, confidence
+- **Task Fields**: ID, title, description, owner, dates, duration, dependencies, confidence, **reference_links**
+- **Resource Recommendations**: AI provides helpful tutorials, documentation, and guides for each task
 
 ### Task Completeness
+
 - Generates 5-10 meaningful tasks covering complete goal scope
 - Each task includes actionable title and detailed description
 - Suggested owner roles when applicable
+- **Reference links** to official docs, tutorials, and tools
 
 ### Timeline Logic
+
 - Realistic date assignments based on target deadline or horizon
 - Respects task dependencies in scheduling
 - Backfills missing dates intelligently
 - Validates timeline conflicts
 
 ### Code & API Design
+
 - Clean, modular architecture with type hints
 - Async/await for non-blocking execution
 - Comprehensive error handling
@@ -220,11 +240,12 @@ Environment variables (`.env` file):
 ✅ **Timeline Logic** - Realistic, dependency-aware scheduling  
 ✅ **LLM Reasoning** - Intelligent task generation with explanations  
 ✅ **Code Quality** - Clean, modular, well-documented  
-✅ **API Design** - RESTful, validated, documented  
+✅ **API Design** - RESTful, validated, documented
 
 ## 📺 Demo Video
 
 A demo video showcasing:
+
 1. Installation and configuration
 2. API usage via Swagger UI
 3. Frontend workflow with visualization
@@ -235,6 +256,7 @@ A demo video showcasing:
 ## 🤝 Contributing
 
 Future enhancements:
+
 - Database persistence for plan storage
 - Additional LLM providers (OpenAI, Anthropic)
 - Export formats (CSV, PDF)

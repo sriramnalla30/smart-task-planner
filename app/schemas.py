@@ -27,6 +27,10 @@ class Task(BaseModel):
     confidence: Optional[float] = Field(
         default=None, ge=0.0, le=1.0, description="Model confidence in task placement"
     )
+    reference_links: List[str] = Field(
+        default_factory=list,
+        description="Helpful tutorial, documentation, or resource links for completing this task"
+    )
 
 
 class PlanMetadata(BaseModel):

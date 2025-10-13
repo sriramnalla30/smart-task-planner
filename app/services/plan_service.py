@@ -121,7 +121,8 @@ Return ONLY valid JSON with this exact structure:
       "due_date": "2025-10-15",
       "duration_days": 2,
       "depends_on": [],
-      "confidence": 0.85
+      "confidence": 0.85,
+      "reference_links": ["https://example.com/tutorial1", "https://example.com/docs"]
     }}
   ]
 }}
@@ -132,7 +133,10 @@ Requirements:
 - Dependencies must reference valid task IDs that come before
 - Confidence is a float between 0.0 and 1.0
 - Ensure logical task ordering and realistic timelines
-- Include 5-10 meaningful tasks that cover the complete goal"""
+- Include 5-10 meaningful tasks that cover the complete goal
+- For each task, provide 1-3 helpful reference_links to tutorials, documentation, guides, or tools that would help someone complete that task
+- Reference links should be real, publicly accessible URLs (documentation sites, tutorial sites, tool websites, etc.)
+- Prioritize official documentation, popular tutorials, and widely-used resources"""
 
     def _target_schema(self) -> Dict[str, str]:
         return {
