@@ -261,11 +261,20 @@ Future enhancements:
 - Additional LLM providers (OpenAI, Anthropic)
 - Export formats (CSV, PDF)
 - Integration with project management tools
+**
+sample test runs**
+<img width="1067" height="792" alt="image" src="https://github.com/user-attachments/assets/4d366c63-31c2-47d1-80b1-27e09ad20433" />
 
-## 📝 License
+<img width="969" height="404" alt="image" src="https://github.com/user-attachments/assets/12ac5539-509d-4bbc-b11c-6bcc2b76680a" />
 
-MIT License
+<img width="914" height="162" alt="image" src="https://github.com/user-attachments/assets/a69e2e2e-a5e7-4592-b735-0366b48e7381" />
 
----
+<img width="915" height="804" alt="image" src="https://github.com/user-attachments/assets/d8e135cd-872e-4d7e-bfee-a95aedc2e01d" />
+
+<img width="924" height="854" alt="image" src="https://github.com/user-attachments/assets/3f4809d7-db44-477b-8025-1212c1c4d42d" />
+
+<img width="922" height="841" alt="image" src="https://github.com/user-attachments/assets/ddd020e5-fbef-4868-9c7b-239ec62105fc" />
+
+<img width="915" height="353" alt="image" src="https://github.com/user-attachments/assets/05e21ad8-11c4-4f0e-bf10-0eadb31a720d" />
 
 **Built with FastAPI, Google Gemini AI, and modern web technologies**
