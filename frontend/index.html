@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Task Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-indigo-900 mb-2">🎯 Smart Task Planner</h1>
+            <p class="text-gray-600">AI-powered goal breakdown with dependencies & timelines</p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-white rounded-lg shadow-xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Tell me your goal</h2>
+            
+            <form id="planForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Goal Description</label>
+                    <textarea 
+                        id="goal" 
+                        rows="3" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="e.g., Launch a productivity app in 2 weeks"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Target Date (optional)</label>
+                        <input 
+                            type="date" 
+                            id="targetDate"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Or Planning Horizon (days)</label>
+                        <input 
+                            type="number" 
+                            id="horizonDays"
+                            value="21"
+                            min="1"
+                            max="365"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Additional Guidance (optional)</label>
+                    <textarea 
+                        id="guidance" 
+                        rows="2" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="e.g., Team of 3 engineers, tight budget, prioritize MVP"
+                    ></textarea>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="generateBtn"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+                >
+                    ✨ Generate Task Plan
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="hidden text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+            <p class="mt-4 text-gray-600">AI is crafting your task plan...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-8">
+            <p class="font-bold">Error</p>
+            <p id="errorMessage"></p>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden space-y-6">
+            <!-- Metadata -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">📊 Plan Overview</h2>
+                <div class="space-y-2">
+                    <p><strong>Goal:</strong> <span id="resultGoal"></span></p>
+                    <p><strong>Strategy:</strong> <span id="resultStrategy"></span></p>
+                    <p><strong>Planning Horizon:</strong> <span id="resultHorizon"></span> days</p>
+                    <div id="assumptionsSection">
+                        <strong>Assumptions:</strong>
+                        <ul id="assumptionsList" class="list-disc list-inside ml-4 text-gray-700"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks List -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">✅ Tasks Breakdown</h2>
+                <div id="tasksList" class="space-y-4"></div>
+            </div>
+
+            <!-- Gantt Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">📅 Timeline Visualization</h2>
+                <div id="ganttChart" class="mermaid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: false });
+
+        const form = document.getElementById('planForm');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide previous results and errors
+            results.classList.add('hidden');
+            error.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            const goal = document.getElementById('goal').value;
+            const targetDate = document.getElementById('targetDate').value || null;
+            const horizonDays = parseInt(document.getElementById('horizonDays').value) || null;
+            const guidance = document.getElementById('guidance').value || null;
+
+            const payload = {
+                goal,
+                target_date: targetDate,
+                horizon_days: targetDate ? null : horizonDays,
+                guidance
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/plan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        function displayResults(data) {
+            // Display metadata
+            document.getElementById('resultGoal').textContent = data.metadata.goal;
+            document.getElementById('resultStrategy').textContent = data.metadata.planning_strategy || 'N/A';
+            document.getElementById('resultHorizon').textContent = data.metadata.horizon_days;
+
+            const assumptionsList = document.getElementById('assumptionsList');
+            assumptionsList.innerHTML = '';
+            (data.metadata.assumptions || []).forEach(assumption => {
+                const li = document.createElement('li');
+                li.textContent = assumption;
+                assumptionsList.appendChild(li);
+            });
+
+            // Display tasks
+            const tasksList = document.getElementById('tasksList');
+            tasksList.innerHTML = '';
+            data.tasks.forEach((task, index) => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition';
+                taskCard.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-800">${index + 1}. ${task.title}</h3>
+                            <p class="text-sm text-gray-600 mt-1">${task.description || ''}</p>
+                            <div class="mt-2 flex flex-wrap gap-2 text-sm">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">ID: ${task.id}</span>
+                                ${task.start_date ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded">📅 ${task.start_date} → ${task.due_date}</span>` : ''}
+                                ${task.confidence ? `<span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">🎯 ${Math.round(task.confidence * 100)}%</span>` : ''}
+                            </div>
+                            ${task.depends_on && task.depends_on.length > 0 ? `
+                                <p class="text-sm text-gray-500 mt-2">⚡ Depends on: ${task.depends_on.join(', ')}</p>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                tasksList.appendChild(taskCard);
+            });
+
+            // Generate Gantt chart
+            generateGanttChart(data.tasks);
+
+            results.classList.remove('hidden');
+        }
+
+        function generateGanttChart(tasks) {
+            let ganttDef = 'gantt\n';
+            ganttDef += '    title Task Timeline\n';
+            ganttDef += '    dateFormat YYYY-MM-DD\n';
+            ganttDef += '    section Tasks\n';
+
+            tasks.forEach(task => {
+                if (task.start_date && task.due_date) {
+                    const status = task.depends_on && task.depends_on.length > 0 ? 'active' : 'done';
+                    ganttDef += `    ${task.title.substring(0, 30)} :${status}, ${task.id}, ${task.start_date}, ${task.due_date}\n`;
+                }
+            });
+
+            const ganttElement = document.getElementById('ganttChart');
+            ganttElement.innerHTML = ganttDef;
+            mermaid.run({ nodes: [ganttElement] });
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            error.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
