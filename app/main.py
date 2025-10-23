@@ -8,7 +8,6 @@ from app.config import get_settings
 from app.schemas import PlanRequest, PlanResponse
 from app.services.plan_service import PlanService
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
