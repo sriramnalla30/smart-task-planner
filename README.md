@@ -6,6 +6,19 @@ AI-powered task planning service that breaks down goals into actionable tasks wi
 
 **Objective**: Break user goals into actionable tasks with timelines using AI reasoning.
 
+
+## 📺 Demo Video
+
+A demo video showcasing:
+
+1. Installation and configuration
+2. API usage via Swagger UI
+3. Frontend workflow with visualization
+4. Generated plan with dependencies and timelines
+
+**https://drive.google.com/file/d/1ypBFDryRGalVdaeVrGiLSvWROjtElXlZ/view?usp=drivesdk**
+
+
 **Scope:**
 
 - **Input**: Goal text (e.g., "Launch a product in 2 weeks")
@@ -242,17 +255,6 @@ Environment variables (`.env` file):
 ✅ **Code Quality** - Clean, modular, well-documented  
 ✅ **API Design** - RESTful, validated, documented
 
-## 📺 Demo Video
-
-A demo video showcasing:
-
-1. Installation and configuration
-2. API usage via Swagger UI
-3. Frontend workflow with visualization
-4. Generated plan with dependencies and timelines
-
-**[Recording coming soon]**
-
 ## 🤝 Contributing
 
 Future enhancements:
@@ -261,9 +263,6 @@ Future enhancements:
 - Additional LLM providers (OpenAI, Anthropic)
 - Export formats (CSV, PDF)
 - Integration with project management tools
-
-## 📝 License
-
 **
 sample test runs**
 <img width="1067" height="792" alt="image" src="https://github.com/user-attachments/assets/4d366c63-31c2-47d1-80b1-27e09ad20433" />
